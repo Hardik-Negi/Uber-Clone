@@ -16,10 +16,10 @@ const Captainlogin = () => {
        setPassword("");
      };
   return (
-   <div className="p-7 h-screen flex flex-col justify-between">
+   <div className="py-4 px-7 h-screen flex flex-col justify-between">
       <div>
         <img
-          className="w-16 mb-5 "
+          className="w-16 mb-2 "
           src="https://toppng.com/uploads/preview/uber-logo-png-uber-logo-2018-11563110096yltfjpzwbm.png"
           alt=""
         />
@@ -51,13 +51,13 @@ const Captainlogin = () => {
         </form>
         <p className="text-center">
           Join a fleet?
-          <Link to="/signup" className="text-blue-600">
-            Register as a Captain
+           <Link to="/captain-signup" className=" ml-1 text-blue-600">
+             Register as a Captain
           </Link>
         </p>
       </div>
       <div>
-        <Link to='/captain-login' className="flex justify-center items-center bg-[#d5622d] text-white rounded px-4 mb-5 w-full  py-2 text-base placeholder:text-fff ">
+        <Link to='/signup' className="flex justify-center items-center bg-[#d5622d] text-white rounded px-4 mb-5 w-full  py-2 text-base placeholder:text-fff ">
           Sign in as User
         </Link>
       </div>
