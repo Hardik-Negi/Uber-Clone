@@ -1,29 +1,43 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios'
+import {userDataContext} from "../context/UserContext";
 
 const UserSignup = () => {
-  const [email,setEmail]=useState('');
-  const [password,setPassword]=useState('');
-  const [firstName,setfirstName]=useState('');
-  const [lastName,setLastName]=useState('');
-  const [userData,setUserData]=useState({})
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setfirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  
 
-  const submitHandler=(e)=>{
-   e.preventDefault();
-   setUserData({
-    fullName:{
-      firstName:firstName,
-      lastName:lastName,
-    },
-    email:email,
-    password:password
-   })
+  const nav = useNavigate();
 
-   setEmail('');
-   setfirstName('');
-   setLastName('');
-   setPassword('')
-  }
+  const {user,setUser}=React.useContext(userDataContext)
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const newUser = {
+      fullname: {
+        firstname: firstName,
+        lastname: lastName,
+      },
+      email: email,
+      password: password,
+    };
+   const response=await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`,newUser);
+   
+   if(response.status===201){
+    const data=response.data
+    setUser(data.user)
+    localStorage.setItem('token',data.token)
+    nav('/home')
+   }
+
+    setEmail("");
+    setfirstName("");
+    setLastName("");
+    setPassword("");
+  };
   return (
     <div className="p-7 h-screen flex flex-col justify-between">
       <div>
@@ -82,15 +96,15 @@ const UserSignup = () => {
         <p className="text-center">
           Already have a account?{" "}
           <Link to="/login" className="text-blue-600">
-            Login here
+            Create account
           </Link>
         </p>
       </div>
       <div>
         <p className="text-[10px] leading-tight">
-         This site is protected by reCAPTCHA and the <span className="underline">Google Privacy Policy</span> and <span className="underline">
-         terms of Service apply
-         </span>.
+          This site is protected by reCAPTCHA and the{" "}
+          <span className="underline">Google Privacy Policy</span> and{" "}
+          <span className="underline">terms of Service apply</span>.
         </p>
       </div>
     </div>
