@@ -96,7 +96,7 @@ const UserSignup = () => {
         <p className="text-center">
           Already have a account?{" "}
           <Link to="/login" className="text-blue-600">
-            Create account
+            Login account
           </Link>
         </p>
       </div>
