@@ -5,6 +5,8 @@ import "remixicon/fonts/remixicon.css";
 import LocationSearchPanel from "../components/LocationSearchPanel";
 import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRide from "../components/ConfirmRide";
+import LookingForDriver from "../components/LookingForDriver";
+import WaitingForDriver from "../components/WaitingForDriver";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -13,10 +15,14 @@ const Home = () => {
   const panelRef = useRef(null);
   const vehiclePanelRef = useRef(null);
   const panelCloseRef = useRef(null);
-  const confirmRidePanelRef=useRef(null)
+  const confirmRidePanelRef = useRef(null);
+  const vehicleFoundRef = useRef(null);
+  const waitingForDriverRef= useRef(null);
   const [vehiclePanel, setVehiclePanel] = useState(false);
-  const [confirmRidePanel,setConfirmRidePanel]=useState(false);
-  
+  const [confirmRidePanel, setConfirmRidePanel] = useState(false);
+
+  const [vehicleFound, setVehicleFound] = useState(false);
+  const [waitingForDriver, setwaitingForDriver] = useState(false);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -64,7 +70,7 @@ const Home = () => {
 
   useGSAP(
     function () {
-      if (vehiclePanel) {
+      if (confirmRidePanel) {
         gsap.to(confirmRidePanelRef.current, {
           transform: "translateY(0)",
         });
@@ -74,7 +80,37 @@ const Home = () => {
         });
       }
     },
-    [vehiclePanel]
+    [confirmRidePanel]
+  );
+
+  useGSAP(
+    function () {
+      if (vehicleFound) {
+        gsap.to(vehicleFoundRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(vehicleFoundRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [vehicleFound]
+  );
+
+  useGSAP(
+    function () {
+      if (waitingForDriver) {
+        gsap.to(waitingForDriverRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(waitingForDriverRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [waitingForDriver]
   );
 
   return (
@@ -84,7 +120,6 @@ const Home = () => {
         src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
         alt=""
       />
-
       <div className="h-screen w-screen">
         <img
           className="h-full w-full object-cover"
@@ -130,7 +165,7 @@ const Home = () => {
             />
           </form>
         </div>
-        <div ref={panelRef} className=" bg-white  h-0">
+        <div ref={panelRef} className=" bg-white h-0">
           <LocationSearchPanel
             setPanelOpen={setPanelOpen}
             setVehiclePanel={setVehiclePanel}
@@ -141,18 +176,32 @@ const Home = () => {
         ref={vehiclePanelRef}
         className="fixed w-full z-10 bottom-0 translate-y-full px-3 py-10 bg-white pt-12"
       >
-     <VehiclePanel
-     setConfirmRidePanel={setConfirmRidePanel}
-      setVehiclePanel={setVehiclePanel}/>
+        <VehiclePanel
+          setConfirmRidePanel={setConfirmRidePanel}
+          setVehiclePanel={setVehiclePanel}
+        />
       </div>
-     
       <div
         ref={confirmRidePanelRef}
-        className="fixed w-full z-10 bottom-0 translate-y-full px-3 py-6 bg-white pt-12"
+        className="fixed w-full z-10 bottom-0 translate-y-full px-3 py-10 bg-white pt-12"
       >
-     <ConfirmRide setVehiclePanel={setVehiclePanel}/>
+        <ConfirmRide
+          setConfirmRidePanel={setConfirmRidePanel}
+          setVehicleFound={setVehicleFound}
+          setVehiclePanel={setVehiclePanel}
+        />
       </div>
 
+      <div
+        ref={vehicleFoundRef}
+        className="fixed w-full z-10 bottom-0 translate-y-full px-3 py-10 bg-white pt-12"
+      >
+        <LookingForDriver setVehicleFound={setVehicleFound} />
+      </div>
+
+      <div ref={waitingForDriverRef}  className="fixed w-full z-10 bottom-0  px-3 py-10 bg-white pt-12">
+        <WaitingForDriver waitingForDriver={waitingForDriver} />
+      </div>
     </div>
   );
 };
