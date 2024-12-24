@@ -124,10 +124,10 @@ const Home = () => {
         <img
           className="h-full w-full object-cover"
           src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt=""
+          alt="background"
         />
       </div>
-      <div className="bg-white flex flex-col justify-end h-screen absolute bottom-0 w-full ">
+      <div className="flex flex-col justify-end h-screen absolute top-0 w-full ">
         <div className="h-[30%] p-6 bg-white relative">
           <h5
             ref={panelCloseRef}
