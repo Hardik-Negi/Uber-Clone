@@ -7,6 +7,7 @@ import VehiclePanel from "../components/VehiclePanel";
 import ConfirmRide from "../components/ConfirmRide";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
+import axios from 'axios'
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -17,12 +18,50 @@ const Home = () => {
   const panelCloseRef = useRef(null);
   const confirmRidePanelRef = useRef(null);
   const vehicleFoundRef = useRef(null);
-  const waitingForDriverRef= useRef(null);
+  const waitingForDriverRef = useRef(null);
   const [vehiclePanel, setVehiclePanel] = useState(false);
   const [confirmRidePanel, setConfirmRidePanel] = useState(false);
 
   const [vehicleFound, setVehicleFound] = useState(false);
   const [waitingForDriver, setwaitingForDriver] = useState(false);
+  const [pickupSuggestions, setPickupSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+  const [activeField, setActiveField] = useState(null);
+
+  const handlePickupChange = async (e) => {
+    setPickup(e.target.value);
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`,
+        {
+          params: { input: e.target.value },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setPickupSuggestions(response.data);
+      console.log(pickupSuggestions,"hardikkkkkkkkkkk")
+    } catch  {
+    
+    }
+  };
+
+  const handleDestinationChange = async (e) => {
+    setDestination(e.target.value);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/maps/get-suggestions`,
+        {
+          params: { input: e.target.value },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+      setDestinationSuggestions(response.data);
+    } catch  {
+     
+    }
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -147,9 +186,10 @@ const Home = () => {
               className="bg-[#eee] px-12 py-2 text-lg rounded-lg w-full mt-5"
               onClick={() => {
                 setPanelOpen(true);
+                setActiveField('pickup')
               }}
               value={pickup}
-              onChange={(e) => setPickup(e.target.value)}
+              onChange={handlePickupChange}
               type="text"
               placeholder="Add a pick-up location"
             />
@@ -158,17 +198,22 @@ const Home = () => {
               type="text"
               onClick={() => {
                 setPanelOpen(true);
+                setActiveField('destination')
               }}
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={handleDestinationChange}
               placeholder="Enter a destination"
             />
           </form>
         </div>
         <div ref={panelRef} className=" bg-white h-0">
           <LocationSearchPanel
+          suggestions={activeField ==='pickup' ? pickupSuggestions : destinationSuggestions}
             setPanelOpen={setPanelOpen}
             setVehiclePanel={setVehiclePanel}
+            setPickup={setPickup}
+            setDestination={setDestination}
+            activeField={activeField}
           />
         </div>
       </div>
@@ -199,7 +244,10 @@ const Home = () => {
         <LookingForDriver setVehicleFound={setVehicleFound} />
       </div>
 
-      <div ref={waitingForDriverRef}  className="fixed w-full z-10 bottom-0  px-3 py-10 bg-white pt-12">
+      <div
+        ref={waitingForDriverRef}
+        className="fixed w-full z-10 bottom-0  px-3 py-10 bg-white pt-12"
+      >
         <WaitingForDriver waitingForDriver={waitingForDriver} />
       </div>
     </div>
