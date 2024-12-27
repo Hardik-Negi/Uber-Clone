@@ -1,6 +1,9 @@
-import React from 'react'
+import React,{useContext} from 'react'
+import {CaptainDataContext} from '../context/CaptainContext'
 
 const CaptainDetails = () => {
+
+  const {captain}=useContext(CaptainDataContext)
   return (
     <>
        <div className="flex items-center justify-between">
@@ -10,7 +13,7 @@ const CaptainDetails = () => {
               src="https://plus.unsplash.com/premium_photo-1669879825881-6d4e4bde67d5?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cmFuZG9tJTIwcGVvcGxlfGVufDB8fDB8fHww"
               alt=""
             />
-            <h4 className="text-lg font-medium">Harsh Patel</h4>
+            <h4 className="text-lg font-medium capitalize">{captain.fullname.firstname + " " + captain.fullname.lastname}</h4>
           </div>
           <div>
             <h4 className="text-xl font-semibold">$295.20</h4>

@@ -16,10 +16,10 @@ const LocationSearchPanel = ({
     }
   };
   
-  console.log(suggestions)
+
   return (
     <div>
-      {suggestions && suggestions.map((item, index) => (
+      {suggestions.map((item, index) => (
         <div
          key={index}
           onClick={() => {
