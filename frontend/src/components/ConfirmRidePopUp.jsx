@@ -1,12 +1,32 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ConfirmRidePopUp = (props) => {
-  const [otp,setOtp]=useState('')
+  const [otp, setOtp] = useState("");
+  const nav = useNavigate();
 
-  const submitHandler=(e)=>{
+  const submitHandler = async (e) => {
     e.preventDefault();
-  }
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/rides/start-ride`,
+      {
+        params: {
+          rideId: props.ride._id,
+          otp: otp,
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+      
+    );
+    if (response.status === 200) {
+      props.setConfirmRidePopupPanel(false);
+      props.setRidePopupPanel(false);
+      nav("/captain-riding",{state:{ride:props.ride}});
+    }
+  };
   return (
     <div>
       <h5
@@ -29,7 +49,11 @@ const ConfirmRidePopUp = (props) => {
             src="https://plus.unsplash.com/premium_photo-1669879825881-6d4e4bde67d5?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cmFuZG9tJTIwcGVvcGxlfGVufDB8fDB8fHww"
             alt=""
           />
-          <h2 className="text-xl font-medium">Harsh Patel</h2>
+          <h2 className="text-xl font-medium capitalize">
+            {props.ride?.user.fullname.firstname +
+              " " +
+              props.ride?.user.fullname.lastname}
+          </h2>
         </div>
         <h5 className="text-lg font-semibold">2.2 KM</h5>
       </div>
@@ -41,7 +65,7 @@ const ConfirmRidePopUp = (props) => {
             <div>
               <h3 className="text-lg font-medium">562/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Kankariya Talab,Bhopal
+                {props.ride?.pickup}
               </p>
             </div>
           </div>
@@ -50,41 +74,43 @@ const ConfirmRidePopUp = (props) => {
             <div>
               <h3 className="text-lg font-medium">562/11-A</h3>
               <p className="text-sm -mt-1 text-gray-600">
-                Kankariya Talab,Bhopal
+                {props.ride?.destination}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-5 p-3 ">
             <i className="text-lg ri-currency-line"></i>
             <div>
-              <h3 className="text-lg font-medium">$193.20</h3>
+              <h3 className="text-lg font-medium">{props.ride?.fare}</h3>
               <p className="text-sm -mt-1 text-gray-600">Cash Cash</p>
             </div>
           </div>
         </div>
 
         <div className="mt-6 w-full">
-          <form onSubmit={(e)=>{
-            submitHandler(e)
-          }}>
-            <input onClick={(e)=>setOtp(e.target.value )} className="bg-[#eee] px-6 py-4 text-lg font-mono rounded-lg w-full mt-3" type="text" 
-            value={otp}
-            placeholder="Enter OTP " />
-          <Link
-            to={"/captain-riding"}
-            className="w-full mt-5 flex text-lg justify-center bg-green-600 text-white font-semibold p-3 rounded-lg"
-          >
-            Confirm
-          </Link>
-          <button
-            onClick={() => {
-              props.setConfirmRidePopupPanel(false);
-              props.setRidePopupPanel(false);
-            }}
-            className="w-full mt-2 text-lg  text-white bg-red-700 font-semibold p-3 rounded-lg"
-          >
-            Cancel
-          </button>
+          <form onSubmit={submitHandler}>
+            <input
+              onClick={(e) => setOtp(e.target.value)}
+              className="bg-[#eee] px-6 py-4 text-lg font-mono rounded-lg w-full mt-3"
+              type="text"
+              value={otp}
+              placeholder="Enter OTP "
+            />
+            <button
+              type="submit"
+              className="w-full mt-5 flex text-lg justify-center bg-green-600 text-white font-semibold p-3 rounded-lg"
+            >
+              Confirm
+            </button>
+            <button
+              onClick={() => {
+                props.setConfirmRidePopupPanel(false);
+                props.setRidePopupPanel(false);
+              }}
+              className="w-full mt-2 text-lg  text-white bg-red-700 font-semibold p-3 rounded-lg"
+            >
+              Cancel
+            </button>
           </form>
         </div>
       </div>

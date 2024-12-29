@@ -20,14 +20,14 @@ const CaptainProtectWrapper = ({ children }) => {
       })
       .then((response) => {
         if (response.status === 200) {
-          const data = response.data;
-          setCaptain(data.captain);
+        
+          setCaptain(response.data.captain);
           setIsLoading(false);
         }
       })
       .catch((err) => {
-        console.log(err);
-        Navigate("/captain-login");
+        localStorage.removeItem('token')
+        nav("/captain-login");
       });
   }, [token]);
 

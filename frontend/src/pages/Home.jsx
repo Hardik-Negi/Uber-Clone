@@ -10,6 +10,8 @@ import WaitingForDriver from "../components/WaitingForDriver";
 import axios from "axios";
 import { SocketContext } from "../context/SocketContext";
 import { userDataContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import LiveTracking from "../components/LiveTracking";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
@@ -30,13 +32,29 @@ const Home = () => {
   const [activeField, setActiveField] = useState(null);
   const [fare, setFare] = useState({});
   const [vehicleType, setVehicleType] = useState(null);
-  const {socket}=useContext(SocketContext)
-  const {user}=useContext(userDataContext)
+  const { socket } = useContext(SocketContext);
+  const { user } = useContext(userDataContext);
+  const [ride, setride] = useState(null)
+
+  const nav=useNavigate();
+
+  useEffect(() => {
+    socket.emit("join", { userType: "user", userId: user._id });
+  }, [user]);
+
+  socket.on("ride-confirmed", (ride) => {
+    setVehicleFound(false);
+    setwaitingForDriver(true);
+    setride(ride);
+  });
+
+  socket.on('ride-started',ride=>{
+    console.log('ride');
+    setwaitingForDriver(false);
+    nav('/riding',{state:{ride}});
+  })
 
 
-  useEffect(()=>{
-socket.emit('join',{userType:'user',userId:user._id})
-  },[user]) 
 
   const handlePickupChange = async (e) => {
     setPickup(e.target.value);
@@ -51,7 +69,7 @@ socket.emit('join',{userType:'user',userId:user._id})
         }
       );
       setPickupSuggestions(response.data);
-      console.log(pickupSuggestions, "hardikkkkkkkkkkk");
+     
     } catch {}
   };
 
@@ -202,11 +220,7 @@ socket.emit('join',{userType:'user',userId:user._id})
         alt=""
       />
       <div className="h-screen w-screen">
-        <img
-          className="h-full w-full object-cover"
-          src="https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif"
-          alt="background"
-        />
+        <LiveTracking/>
       </div>
       <div className="flex flex-col justify-end h-screen absolute top-0 w-full ">
         <div className="h-[30%] p-6 bg-white relative">
@@ -314,7 +328,13 @@ socket.emit('join',{userType:'user',userId:user._id})
         ref={waitingForDriverRef}
         className="fixed w-full z-10 bottom-0  px-3 py-10 bg-white pt-12"
       >
-        <WaitingForDriver waitingForDriver={waitingForDriver} />
+        <WaitingForDriver 
+        waitingForDriver={waitingForDriver}
+        ride={ride}
+        setVehicleFound={setVehicleFound}
+        setwaitingForDriver={setwaitingForDriver}
+      
+         />
       </div>
     </div>
   );

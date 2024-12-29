@@ -58,6 +58,7 @@ const RidePopUp = (props) => {
         <button
           onClick={() => {
             props.setRidePopupPanel(false);
+            props.confirmRide();
           }}
           className=" mt-4 bg-gray-300 text-gray-700 font-semibold p-3 px-8 rounded-lg"
         >
@@ -65,7 +66,7 @@ const RidePopUp = (props) => {
         </button>
         <button
           onClick={() => {
-           props.setConfirmRidePopupPanel(true);
+           props.setRidePopupPanel(true);
           }}
           className=" mt-5 bg-green-600 textt-white font-semibold p-3 px-8 rounded-lg"
         >
