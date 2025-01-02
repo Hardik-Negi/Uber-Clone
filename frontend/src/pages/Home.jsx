@@ -209,7 +209,7 @@ const Home = () => {
         },
       }
     );
-    console.log(response.data && response.data, "harddddddddddddddd");
+   
   };
 
   return (

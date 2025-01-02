@@ -7,6 +7,7 @@ import gsap from "gsap";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
 import { SocketContext } from "../context/SocketContext";
 import { CaptainDataContext } from "../context/CaptainContext";
+import axios from "axios";
 
 const CaptainHome = () => {
   const [ridePopupPanel, setRidePopupPanel] = useState(false);
@@ -51,7 +52,7 @@ const CaptainHome = () => {
   },[]);
 
   socket.on("new-ride", (data) => {
-    console.log(data);
+    // console.log(data);
     setRide(data);
     setRidePopupPanel(true);
   });

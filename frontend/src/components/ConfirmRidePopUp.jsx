@@ -90,8 +90,8 @@ const ConfirmRidePopUp = (props) => {
         <div className="mt-6 w-full">
           <form onSubmit={submitHandler}>
             <input
-              onClick={(e) => setOtp(e.target.value)}
-              className="bg-[#eee] px-6 py-4 text-lg font-mono rounded-lg w-full mt-3"
+              onClick={(e)=>setOtp(e.target.value)}
+              className="bg-[#eee] px-6 py-4 text-lg z-30 font-mono rounded-lg w-full mt-3"
               type="text"
               value={otp}
               placeholder="Enter OTP "

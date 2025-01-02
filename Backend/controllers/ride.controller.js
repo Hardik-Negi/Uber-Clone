@@ -9,7 +9,7 @@ module.exports.createRide = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const { pickup, destination, vehicleType } = req.body;
+  const {userId, pickup, destination, vehicleType } = req.body;
   try {
     const ride = await rideService.createRide({
       user: req.user._id,
@@ -26,19 +26,21 @@ module.exports.createRide = async (req, res) => {
     const captainInRadius = await mapService.getCaptainInTheRadius(
       pickupCoordinates.latitude,
       pickupCoordinates.longitude,
-      2
+      5
     );
+    console.log(captainInRadius,"captainInRadius")
 
     ride.otp = "";
 
-    const rideWithUser=await rideModels.findOne({_id:ride._id}).populate('user')
-    captainInRadius.map(async (captain) => {
+    const rideWithUser=await rideModels.findOne({_id:ride._id}).populate('user');
+    captainInRadius.map(captain => {
       sendMessageToSocketId(captain.socketId, {
         event: "new-ride",
         data: rideWithUser,
       });
     });
   } catch (err) {
+    console.log(err,"hardikkkkkkkkkkkk");
     return res.status(500).json({ message: err.message });
   }
 };

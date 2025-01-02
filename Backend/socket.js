@@ -50,7 +50,7 @@ function initializeSocket(server) {
   });
 }
 
-function sendMessageToSocketId(socketId, messageObject) {
+const sendMessageToSocketId=(socketId, messageObject)=>{
 
    console.log(`Sending message to ${socketId}`,messageObject);
   if (io) {
